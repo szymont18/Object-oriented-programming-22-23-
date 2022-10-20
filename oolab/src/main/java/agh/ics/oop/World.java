@@ -1,7 +1,20 @@
 package agh.ics.oop;
 
 public class World {
+
     public static void main(String[] args) {
+//        MapDirection[] test = {MapDirection.NORTH, MapDirection.SOUTH, MapDirection.EAST, MapDirection.WEST};
+//
+//        for (MapDirection md : test){
+//            System.out.println(md);
+//            System.out.println(md.next());
+//            System.out.println(md.previous());
+//            System.out.println(md.toUnitVector());
+//            System.out.println();
+//            System.out.println();
+//        }
+
+
         System.out.println("System wystartowal");
         Direction[] eTab = new Direction[args.length];
         for (int i = 0; i < args.length; i++){
