@@ -1,33 +1,33 @@
 package agh.ics.oop;
 
+import java.util.ArrayList;
+
 public class World {
 
     public static void main(String[] args) {
-//        MapDirection[] test = {MapDirection.NORTH, MapDirection.SOUTH, MapDirection.EAST, MapDirection.WEST};
-//
-//        for (MapDirection md : test){
-//            System.out.println(md);
-//            System.out.println(md.next());
-//            System.out.println(md.previous());
-//            System.out.println(md.toUnitVector());
-//            System.out.println();
-//            System.out.println();
-//        }
 
+        Animal dog = new Animal(new Vector2d(2, 2));
+        String[] moves = {"right", "f","a","forward","f","x"};
 
-        System.out.println("System wystartowal");
-        Direction[] eTab = new Direction[args.length];
-        for (int i = 0; i < args.length; i++){
-            switch (args[i]){
-                case "f" -> eTab[i] = Direction.Forward;
-                case "b" -> eTab[i] = Direction.Backward;
-                case "r" -> eTab[i] = Direction.Right;
-                case "l" -> eTab[i] = Direction.Left;
-                default -> eTab[i] = Direction.NONE;
-            }
+        MoveDirection[] parsedMoves = OptionsParser.parse(moves);
+        for (MoveDirection move : parsedMoves){
+            dog.move(move);
         }
-        run(eTab);
-        System.out.println("System zakonczyl swoje dzialanie");
+        System.out.println(dog);
+
+//        System.out.println("System wystartowal");
+//        Direction[] eTab = new Direction[args.length];
+//        for (int i = 0; i < args.length; i++){
+//            switch (args[i]){
+//                case "f" -> eTab[i] = Direction.Forward;
+//                case "b" -> eTab[i] = Direction.Backward;
+//                case "r" -> eTab[i] = Direction.Right;
+//                case "l" -> eTab[i] = Direction.Left;
+//                default -> eTab[i] = Direction.NONE;
+//            }
+//        }
+//        run(eTab);
+//        System.out.println("System zakonczyl swoje dzialanie");
     }
 
     static void run(Direction[] args) {
