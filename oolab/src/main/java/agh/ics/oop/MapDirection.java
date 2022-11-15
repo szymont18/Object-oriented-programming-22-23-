@@ -10,10 +10,10 @@ public enum MapDirection {
     public String toString(){
         String res = new String();
         switch (this){
-            case EAST -> res = "Wschód";
-            case WEST -> res = "Zachód";
-            case NORTH -> res = "Północ";
-            case SOUTH -> res = "Południe";
+            case EAST -> res = "E";
+            case WEST -> res = "W";
+            case NORTH -> res = "N";
+            case SOUTH -> res = "S";
         }
         return res;
     }
@@ -43,10 +43,10 @@ public enum MapDirection {
     public Vector2d toUnitVector(){
         Vector2d res = new Vector2d(0,0);
         switch (this){
-            case EAST -> {res = res.add(new Vector2d(0, 1));}
-            case WEST -> {res = res.add(new Vector2d(0, -1));}
-            case NORTH -> {res = res.add(new Vector2d(1, 0));}
-            case SOUTH -> {res = res.add(new Vector2d(-1, 0));}
+            case EAST -> {res = res.add(new Vector2d(1, 0));}
+            case WEST -> {res = res.add(new Vector2d(-1, 0));}
+            case NORTH -> {res = res.add(new Vector2d(0, 1));}
+            case SOUTH -> {res = res.add(new Vector2d(0, -1));}
         }
         return res;
     }

@@ -5,10 +5,11 @@ import java.util.Objects;
 public class Animal {
     private MapDirection aDirection = MapDirection.NORTH;
     private Vector2d coordinates;
+    private IWorldMap map;
 
-    public Animal(){
-        coordinates = new Vector2d(2,2);
-    }
+
+
+
     public Animal(Vector2d other){
         if(other.x >= 0 && other.x <= 4 && other.y >= 0 && other.y <= 4) coordinates = other;
         else coordinates = new Vector2d(2, 2);
@@ -19,9 +20,22 @@ public class Animal {
         else coordinates = new Vector2d(2, 2);
         aDirection = dir;
     }
+
+    public Animal(IWorldMap map, Vector2d initialPosition){
+        this.map = map;
+        this.coordinates = initialPosition;
+    }
+
+    public Animal(IWorldMap map, Vector2d initialPosition, MapDirection initialDirection){
+        this.map = map;
+        this.coordinates = initialPosition;
+        this.aDirection = initialDirection;
+    }
+
+
     @Override
     public String toString(){
-        return "Direction: " + aDirection.toString() + ". Coordinates: " + coordinates.toString();
+        return aDirection.toString();
     }
 
     public boolean isAt(Vector2d position){
@@ -40,52 +54,29 @@ public class Animal {
         return Objects.hash(aDirection, coordinates);
     }
 
-    public void move(MoveDirection direction){
-        switch (direction){
-            case RIGHT -> {
-                aDirection = aDirection.next();
-            }
-            case LEFT -> {
-                aDirection = aDirection.previous();
-            }
-            case FORWARD -> {
-                switch (aDirection){
-                    case NORTH -> {
-                        if (coordinates.y + 1 <= 4) coordinates = coordinates.add(new Vector2d(0, 1));
-                    }
-                    case EAST -> {
-                        if (coordinates.x + 1 <= 4) coordinates = coordinates.add(new Vector2d(1,0));
-                    }
-                    case WEST -> {
-                        if (coordinates.x - 1 >= 0) coordinates = coordinates.add(new Vector2d(-1, 0));
-                    }
-                    case SOUTH -> {
-                        if (coordinates.y - 1>= 0) coordinates = coordinates.add(new Vector2d(0, -1));
-                    }
-                }
-            }
 
-            case BACKWARD -> {
-                switch (aDirection){
-                    case NORTH -> {
-                        if (coordinates.y - 1 >= 0) coordinates = coordinates.add(new Vector2d(0,-1));
-                    }
-                    case EAST -> {
-                        if (coordinates.x - 1 >= 0) coordinates = coordinates.add(new Vector2d(-1, 0));
-                    }
-                    case WEST -> {
-                        if (coordinates.x + 1 <= 4) coordinates = coordinates.add(new Vector2d(1,0));
-                    }
-                    case SOUTH -> {
-                        if (coordinates.y + 1 <= 4) coordinates = coordinates.add(new Vector2d(0, 1));
-                    }
-
-                }
-            }
-        }
+    private Vector2d moveTo(MoveDirection direction){
+        int fOrb = (direction == MoveDirection.FORWARD) ? 1:-1;
+        Vector2d tmp = this.aDirection.toUnitVector();
+        return new Vector2d(tmp.x * fOrb + this.coordinates.x, tmp.y*fOrb + this.coordinates.y);
 
     }
 
+    public void move(MoveDirection direction){
+        if (direction == MoveDirection.RIGHT) this.aDirection = this.aDirection.next();
+        else if (direction == MoveDirection.LEFT) this.aDirection = this.aDirection.previous();
+        else{
+            Vector2d afterMove = moveTo(direction);
+            Vector2d beforeMove = new Vector2d(this.coordinates.x, this.coordinates.y);
+            this.coordinates = (this.map.canMoveTo(afterMove)) ? afterMove : this.coordinates;
+            RectangularMap rMap = (RectangularMap) this.map;
 
+            //Change status of the map after move
+            rMap.changeStatus(beforeMove, this.coordinates, this);
+        }
+    }
 
+    public Vector2d getPosition(){
+        return this.coordinates;
+    }
 }

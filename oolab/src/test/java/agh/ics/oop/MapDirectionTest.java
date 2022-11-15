@@ -45,9 +45,9 @@ class MapDirectionTest {
         assertNotNull(MapDirection.WEST.toUnitVector());
 
         //Equals
-        assertEquals(new Vector2d(1, 0), MapDirection.NORTH.toUnitVector());
-        assertEquals(new Vector2d(0, 1), MapDirection.EAST.toUnitVector());
-        assertEquals(new Vector2d(-1, 0), MapDirection.SOUTH.toUnitVector());
-        assertEquals(new Vector2d(0, -1), MapDirection.WEST.toUnitVector());
+        assertEquals(new Vector2d(0, 1), MapDirection.NORTH.toUnitVector());
+        assertEquals(new Vector2d(1, 0), MapDirection.EAST.toUnitVector());
+        assertEquals(new Vector2d(0, -1), MapDirection.SOUTH.toUnitVector());
+        assertEquals(new Vector2d(-1, 0), MapDirection.WEST.toUnitVector());
     }
 }
