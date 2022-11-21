@@ -8,12 +8,16 @@ class RectangularMapTest {
 
     IWorldMap test1 = new RectangularMap(5,5);
     IWorldMap test2 = new RectangularMap(5,5);
+
+
     Animal animal1 = new Animal(test1, new Vector2d(2,2));
     Animal animal2 = new Animal(test1, new Vector2d(2,3));
     Animal animal3 = new Animal(test1, new Vector2d(1,1));
     Animal animal4 = new Animal(test1, new Vector2d(2,1));
     Animal animal5 = new Animal(test1, new Vector2d(3,3));
     Animal animal6 = new Animal(test1, new Vector2d(3,5));
+
+
     @Test
     void canMoveTo() {
 //        Given:
@@ -32,7 +36,7 @@ class RectangularMapTest {
 
 
 //        Then:it is not allowed for two animals to sit in the same place.
-//        Animal cannot move to the position out of the map
+//        Animal can move to the position out of the map
 
         assertFalse(test1.canMoveTo(animal1.getPosition()));
         assertFalse(test1.canMoveTo(animal2.getPosition()));
@@ -48,10 +52,10 @@ class RectangularMapTest {
         assertTrue(test1.canMoveTo(new Vector2d(4,2)));
         assertTrue(test1.canMoveTo(new Vector2d(5,3)));
 
-        assertFalse(test1.canMoveTo(new Vector2d(-1,0)));
-        assertFalse(test1.canMoveTo(new Vector2d(0,-1)));
-        assertFalse(test1.canMoveTo(new Vector2d(6,0)));
-        assertFalse(test1.canMoveTo(new Vector2d(0,6)));
+        assertTrue(test1.canMoveTo(new Vector2d(-1,0)));
+        assertTrue(test1.canMoveTo(new Vector2d(0,-1)));
+        assertTrue(test1.canMoveTo(new Vector2d(6,0)));
+        assertTrue(test1.canMoveTo(new Vector2d(0,6)));
     }
 
     @Test

@@ -4,60 +4,54 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class RectangularMap implements IWorldMap{
-    public final Vector2d leftLowCorner;
-    public final Vector2d rightUpCorner;
-
+public class RectangularMap extends AbstractWorldMap{
     private List<Animal> animals = new ArrayList<Animal>();
-
-    private HashMap<Vector2d, Animal> occupiedPositions = new HashMap<Vector2d, Animal>();
-
-    private MapVisualizer visualizer = new MapVisualizer(this);
 
 
     public RectangularMap(int width, int height){
-        this.leftLowCorner = new Vector2d(0,0);
-        this.rightUpCorner = new Vector2d(width, height);
+        super();
+        leftLowCorner = new Vector2d(0,0);
+        rightUpCorner = new Vector2d(width, height);
     }
 
-    @Override
-    public boolean canMoveTo(Vector2d position) {
-        return position.precedes(rightUpCorner) && position.follows(leftLowCorner) && !isOccupied(position);
+    public RectangularMap(){
+        super();
     }
 
+
     @Override
-    public boolean place(Animal animal) {
-        if (!isOccupied(animal.getPosition()) &&
-                animal.getPosition().precedes(rightUpCorner) &&
-                animal.getPosition().follows(leftLowCorner)){
+    public boolean place(Object object) {
+        Animal animal = (Animal) object;
+        Object objAt = objectAt(animal.getPosition());
+        if (objAt != null && objAt.getClass() == Grass.class){
+            Grass grass = (Grass) objAt;
+            grass.replant();
+        }
+        if (objAt == null || objAt.getClass() != animal.getClass()){
             this.animals.add(animal);
             occupiedPositions.put(animal.getPosition(), animal);
+
+            changeCorners(animal.getPosition());
+
             return true;
         }
         return false;
-    }
-
-    @Override
-    public boolean isOccupied(Vector2d position) {
-        return (occupiedPositions.get(position) != null);
-
-    }
-
-    @Override
-    public Object objectAt(Vector2d position) {
-        return occupiedPositions.get(position);
-    }
-
-    @Override
-    public String toString(){
-        return visualizer.draw(leftLowCorner,rightUpCorner);
     }
 
     /**
      Change status of the map when animal move to another position
      */
     public void changeStatus(Vector2d start, Vector2d end, Animal animal){
-        this.occupiedPositions.put(start, null);
-        this.occupiedPositions.put(end, animal);
+        occupiedPositions.put(start, null);
+
+
+        Object potentialGrass = objectAt(end);
+        if (potentialGrass != null && potentialGrass.getClass() == Grass.class){
+            occupiedPositions.put(end, animal);
+            Grass grass = (Grass) potentialGrass;
+            grass.replant();
+        }
+        else occupiedPositions.put(end, animal);
+        changeCorners(end);
     }
 }
