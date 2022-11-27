@@ -31,7 +31,7 @@ public class SimulationEngine implements IEngine{
         for (MoveDirection move : this.moves){
             animals.get(i).move(move);
 //            System.out.println(this.map.toString());
-            swing.changeLabel(map.toString());
+//            swing.changeLabel(map.toString());
             i = (i + 1)%animals.size();
         }
 

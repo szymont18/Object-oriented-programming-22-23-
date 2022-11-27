@@ -1,8 +1,12 @@
 package agh.ics.oop;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 public class Grass {
     private Vector2d coordinates;
     private IWorldMap map;
+
+    private IPositionChangeObserver observerMap;
 
     public Grass(Vector2d initialPosition, IWorldMap map){
         this.coordinates = initialPosition;
@@ -23,7 +27,23 @@ public class Grass {
     }
 
     public void replant(){
-        GrassField gField = (GrassField) this.map;
-        gField.replantGrass(this);
+        GrassField gMap = (GrassField) map;
+        int grassNumber = gMap.grassNumber;
+        while (true) {
+            int xPos = ThreadLocalRandom.current().nextInt(0, (int) Math.sqrt(grassNumber * 10));
+            int yPos = ThreadLocalRandom.current().nextInt(0, (int) Math.sqrt(grassNumber * 10));
+            Vector2d newPosition = new Vector2d(xPos, yPos);
+            if (map.objectAt(newPosition) == null) {
+
+                observerMap.positionChangeObserver(this.getPosition(), newPosition);
+                changeCordinates(newPosition);
+                break;
+            }
+        }
+
+    }
+
+    public void addObserver(IPositionChangeObserver observer){
+        this.observerMap = observer;
     }
 }

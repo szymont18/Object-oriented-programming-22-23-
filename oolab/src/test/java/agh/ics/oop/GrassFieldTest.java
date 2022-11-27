@@ -2,10 +2,13 @@ package agh.ics.oop;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.HashMap;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class GrassFieldTest {
-    GrassField field1 = new GrassField(0);
+    HashMap <Vector2d, Object> worldMap1 = new HashMap<Vector2d, Object>();
+    GrassField field1 = new GrassField(0, worldMap1);
     Grass grass1 = new Grass(new Vector2d(1,2), field1);
     Grass grass2 = new Grass(new Vector2d(2,2), field1);
     Grass grass3 = new Grass(new Vector2d(3,7), field1);

@@ -6,11 +6,13 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class GrassField extends AbstractWorldMap{
-    private List<Grass> grassArray = new ArrayList<Grass>();
     public int grassNumber;
-    public GrassField(int grassNumber){
+
+
+    public GrassField(int grassNumber, HashMap<Vector2d, Object>worldMap){
         super();
         this.grassNumber = grassNumber;
+        this.occupiedPositions = worldMap;
         for (int i = 0; i < grassNumber; i++){
 
                plantGrass();
@@ -21,8 +23,11 @@ public class GrassField extends AbstractWorldMap{
     public boolean place(Object object) {
         Grass grass = (Grass) object;
         if (!isOccupied(grass.getPosition())) {
-            this.grassArray.add(grass);
+
             occupiedPositions.put(grass.getPosition(), grass);
+
+            grass.addObserver(this);
+
             changeCorners(grass.getPosition());
             return true;
         }
@@ -37,26 +42,21 @@ public class GrassField extends AbstractWorldMap{
             if (objectAt(newPosition) == null) {
                 Grass grass1 = new Grass(newPosition, this);
                 place(grass1);
+
                 occupiedPositions.put(newPosition, grass1);
-                grassArray.add(grass1);
 
                 break;
             }
         }
     }
 
-    public void replantGrass(Grass grass) {
-        while (true) {
-            int xPos = ThreadLocalRandom.current().nextInt(0, (int) Math.sqrt(grassNumber * 10));
-            int yPos = ThreadLocalRandom.current().nextInt(0, (int) Math.sqrt(grassNumber * 10));
-            Vector2d newPosition = new Vector2d(xPos, yPos);
-            if (objectAt(newPosition) == null) {
-                grass.changeCordinates(newPosition);
-                occupiedPositions.put(newPosition, grass);
+    @Override
+    public void positionChangeObserver(Vector2d start, Vector2d end) {
 
-                break;
-            }
-        }
+        Grass grass = (Grass) objectAt(start);
+
+        occupiedPositions.remove(start);
+        occupiedPositions.put(end, grass);
+        changeCorners(end);
     }
-
 }

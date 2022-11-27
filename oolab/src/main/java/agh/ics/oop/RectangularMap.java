@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class RectangularMap extends AbstractWorldMap{
-    private List<Animal> animals = new ArrayList<Animal>();
+
 
 
     public RectangularMap(int width, int height){
@@ -14,8 +14,9 @@ public class RectangularMap extends AbstractWorldMap{
         rightUpCorner = new Vector2d(width, height);
     }
 
-    public RectangularMap(){
+    public RectangularMap(HashMap <Vector2d, Object> worldMap){
         super();
+        this.occupiedPositions = worldMap;
     }
 
 
@@ -28,9 +29,9 @@ public class RectangularMap extends AbstractWorldMap{
             grass.replant();
         }
         if (objAt == null || objAt.getClass() != animal.getClass()){
-            this.animals.add(animal);
-            occupiedPositions.put(animal.getPosition(), animal);
 
+            occupiedPositions.put(animal.getPosition(), animal);
+            animal.addObserver(this);
             changeCorners(animal.getPosition());
 
             return true;
@@ -41,15 +42,18 @@ public class RectangularMap extends AbstractWorldMap{
     /**
      Change status of the map when animal move to another position
      */
-    public void changeStatus(Vector2d start, Vector2d end, Animal animal){
-        occupiedPositions.put(start, null);
+    @Override
+    public void positionChangeObserver(Vector2d start, Vector2d end){
+        Animal animal = (Animal) objectAt(start);
+        occupiedPositions.remove(start);
 
 
         Object potentialGrass = objectAt(end);
+
         if (potentialGrass != null && potentialGrass.getClass() == Grass.class){
-            occupiedPositions.put(end, animal);
             Grass grass = (Grass) potentialGrass;
             grass.replant();
+            occupiedPositions.put(end, animal);
         }
         else occupiedPositions.put(end, animal);
         changeCorners(end);

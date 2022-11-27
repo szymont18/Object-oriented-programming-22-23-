@@ -7,6 +7,8 @@ public class Animal {
     private Vector2d coordinates;
     private IWorldMap map;
 
+    private IPositionChangeObserver observerMap;
+
 
 
 
@@ -69,14 +71,18 @@ public class Animal {
             Vector2d afterMove = moveTo(direction);
             Vector2d beforeMove = new Vector2d(this.coordinates.x, this.coordinates.y);
             this.coordinates = (this.map.canMoveTo(afterMove)) ? afterMove : this.coordinates;
-            RectangularMap rMap = (RectangularMap) this.map;
+
 
             //Change status of the map after move
-            rMap.changeStatus(beforeMove, this.coordinates, this);
+            observerMap.positionChangeObserver(beforeMove, this.coordinates);
         }
     }
 
     public Vector2d getPosition(){
         return this.coordinates;
+    }
+
+    public void addObserver(IPositionChangeObserver observer){
+        this.observerMap = observer;
     }
 }
