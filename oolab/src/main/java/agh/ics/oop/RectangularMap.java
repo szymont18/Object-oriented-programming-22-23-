@@ -10,8 +10,6 @@ public class RectangularMap extends AbstractWorldMap{
 
     public RectangularMap(int width, int height){
         super();
-        leftLowCorner = new Vector2d(0,0);
-        rightUpCorner = new Vector2d(width, height);
     }
 
     public RectangularMap(HashMap <Vector2d, Object> worldMap){
@@ -21,9 +19,12 @@ public class RectangularMap extends AbstractWorldMap{
 
 
     @Override
-    public boolean place(Object object) {
+    public boolean place(Object object) throws IllegalArgumentException {
         Animal animal = (Animal) object;
         Object objAt = objectAt(animal.getPosition());
+
+        if (objAt != null && objAt.getClass() == Animal.class) throw new IllegalArgumentException();
+
         if (objAt != null && objAt.getClass() == Grass.class){
             Grass grass = (Grass) objAt;
             grass.replant();
@@ -32,7 +33,7 @@ public class RectangularMap extends AbstractWorldMap{
 
             occupiedPositions.put(animal.getPosition(), animal);
             animal.addObserver(this);
-            changeCorners(animal.getPosition());
+            changeCorners(null, animal.getPosition());
 
             return true;
         }
@@ -56,6 +57,6 @@ public class RectangularMap extends AbstractWorldMap{
             occupiedPositions.put(end, animal);
         }
         else occupiedPositions.put(end, animal);
-        changeCorners(end);
+        changeCorners(start, end);
     }
 }

@@ -3,19 +3,18 @@ package agh.ics.oop;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 abstract public class AbstractWorldMap implements IWorldMap, IPositionChangeObserver {
-    protected static Vector2d leftLowCorner;
-    protected static Vector2d rightUpCorner;
-
     protected static MapVisualizer visualizer;
 
     protected HashMap<Vector2d, Object> occupiedPositions = new HashMap<Vector2d, Object>();
 
+    protected static MapBoundary mapBoundary;
+
     public AbstractWorldMap(){
-        leftLowCorner = new Vector2d(0,0);
-        rightUpCorner = new Vector2d(0,0);
+        mapBoundary = new MapBoundary();
         visualizer = new MapVisualizer(this);
     }
     @Override
@@ -35,13 +34,20 @@ abstract public class AbstractWorldMap implements IWorldMap, IPositionChangeObse
 
     @Override
     public String toString(){
-        return visualizer.draw(leftLowCorner,rightUpCorner);
+        return visualizer.draw(mapBoundary.leftLowCorner,mapBoundary.rightUpCorner);
     }
 
 
-    public void changeCorners(Vector2d position){
-        leftLowCorner = position.lowerLeft(leftLowCorner);
-        rightUpCorner = position.upperRight(rightUpCorner);
+    public void changeCorners(Vector2d start, Vector2d end){
+        mapBoundary.positionChangeObserver(start, end);
+    }
+
+    public Vector2d[] getBoundaries(){
+        return new Vector2d[]{mapBoundary.leftLowCorner, mapBoundary.rightUpCorner};
+    }
+
+    public Set<Vector2d> getAllPositions(){
+        return occupiedPositions.keySet();
     }
 
 }

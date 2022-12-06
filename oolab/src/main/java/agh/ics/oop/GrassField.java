@@ -22,13 +22,17 @@ public class GrassField extends AbstractWorldMap{
     @Override
     public boolean place(Object object) {
         Grass grass = (Grass) object;
+        Object objAt = objectAt(grass.getPosition());
+
+        if (objAt != null && objAt.getClass() == Animal.class) throw new IllegalArgumentException();
+
         if (!isOccupied(grass.getPosition())) {
 
             occupiedPositions.put(grass.getPosition(), grass);
 
             grass.addObserver(this);
 
-            changeCorners(grass.getPosition());
+            changeCorners(null, grass.getPosition());
             return true;
         }
         return false;
@@ -42,8 +46,8 @@ public class GrassField extends AbstractWorldMap{
             if (objectAt(newPosition) == null) {
                 Grass grass1 = new Grass(newPosition, this);
                 place(grass1);
-
-                occupiedPositions.put(newPosition, grass1);
+//                Already done in place(grass1)
+//                occupiedPositions.put(newPosition, grass1);
 
                 break;
             }
@@ -57,6 +61,6 @@ public class GrassField extends AbstractWorldMap{
 
         occupiedPositions.remove(start);
         occupiedPositions.put(end, grass);
-        changeCorners(end);
+        changeCorners(start, end);
     }
 }

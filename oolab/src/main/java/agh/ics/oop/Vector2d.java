@@ -46,15 +46,19 @@ public class Vector2d {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Vector2d vector2d = (Vector2d) o;
-        return x == vector2d.x && y == vector2d.y;
+    public boolean equals(Object other) {
+        if (other instanceof Vector2d) {
+            return this.x == ((Vector2d) other).x && this.y == ((Vector2d) other).y;
+        } else {
+            return false;
+        }
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(x, y);
+        return Objects.hash(this.x, this.y);
     }
+
+    public int getX() {return this.x;}
+    public int getY() {return this.y;}
 }
