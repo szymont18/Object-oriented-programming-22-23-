@@ -9,6 +9,8 @@ import javafx.scene.layout.*;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
 import javafx.scene.control.Label;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 import javafx.scene.control.TextField;
@@ -19,20 +21,48 @@ public class App extends Application {
     private final int width = 75;
     private final int height = 75;
 
+    private ArrayList<Vector2d> initialPos = new ArrayList<>();
+    private ArrayList<MapDirection> initialDir = new ArrayList<>();
+
+
+//    @Override public void init() throws Exception{
+//        super.init();
+//    }
+
+
     public void start(Stage primaryStage){
         try {
-            TextField textField = new TextField();
-            Button startButton = getStartButton(textField);
-            VBox vBox = new VBox(20, this.gridPane, textField, startButton);
-            vBox.setAlignment(Pos.CENTER);
-            Scene scene = new Scene(vBox, 800, 800);
+            Label label1 = new Label("Wprowadz ruchy zwierzat");
+            TextField moveTextField = new TextField();
+            VBox movesBox = new VBox(label1, moveTextField);
+
+
+            Button startButton = getStartButton(moveTextField);
+
+
+            Label label2 = new Label("Dodaj poczatkowe pozycje zwierzatek");
+            TextField animalTextField = new TextField();
+            TextField directionTextField = new TextField();
+            Button animalButton = getAnimalButton(animalTextField, directionTextField);
+            HBox animalBox = new HBox(20, animalTextField, directionTextField);
+            animalBox.setAlignment(Pos.CENTER);
+
+            VBox animalVbox = new VBox(label2, animalBox, animalButton);
+            animalVbox.setAlignment(Pos.CENTER);
+
+            HBox movesAndPosition = new HBox(50, animalVbox, movesBox);
+            movesAndPosition.setAlignment(Pos.CENTER);
+
+
+
+            VBox mainBox = new VBox(20, movesAndPosition, startButton, this.gridPane);
+            mainBox.setAlignment(Pos.CENTER);
+            Scene scene = new Scene(mainBox, 800, 800);
             primaryStage.setScene(scene);
             primaryStage.show();
         } catch (IllegalArgumentException exception) {
             System.out.println(exception.getMessage());
         }
-
-
     }
 
     public void modifyGrid(AbstractWorldMap worldMap){
@@ -56,8 +86,6 @@ public class App extends Application {
 
             this.gridPane.getColumnConstraints().add(new ColumnConstraints(this.width));
             GridPane.setHalignment(label1, HPos.CENTER);
-
-
         }
 
         //Left Bar
@@ -67,8 +95,6 @@ public class App extends Application {
 
             this.gridPane.getRowConstraints().add(new RowConstraints(this.height));
             GridPane.setHalignment(label1, HPos.CENTER);
-
-
         }
         //Animals and grasses
         Set<Vector2d> occupiedPositions = worldMap.getAllPositions();
@@ -94,7 +120,7 @@ public class App extends Application {
 
     public Button getStartButton(TextField textField) {
         Button startButton = new Button("Start");
-        startButton.setMaxSize(100, 200);
+        startButton.setMaxSize(200, 250);
         startButton.setOnAction((action) -> {
             String text = textField.getText();
 
@@ -103,14 +129,28 @@ public class App extends Application {
             HashMap<Vector2d, Object> worldMap = new HashMap<Vector2d, Object>();
             IWorldMap map = new RectangularMap(worldMap);
             IWorldMap grassMap = new GrassField(5, worldMap);
-            Vector2d[] positions = {new Vector2d(2, 2), new Vector2d(3, 3), new Vector2d(4, 4)};
-            SimulationEngine engine = new SimulationEngine(directions, map, positions, this);
+            SimulationEngine engine = new SimulationEngine(directions, map, this.initialPos, this.initialDir, this);
 
-            Thread engineThread = new Thread(engine); //:: run ???
+            Thread engineThread = new Thread(engine);
             engineThread.start();
         });
         return startButton;
     }
 
+    public Button getAnimalButton(TextField pos, TextField dir){
+        Button animalButton = new Button("Dodaj zwierzaka");
+        animalButton.setMaxSize(200, 200);
+        animalButton.setOnAction((action) ->{
+            String[] sPos = pos.getText().split(" ");
+            String sDir = dir.getText();
 
+            int x = Integer.parseInt(sPos[0]);
+            int y = Integer.parseInt(sPos[1]);
+            this.initialPos.add(new Vector2d(x,y));
+            this.initialDir.add(MapDirection.fromString(sDir));
+            pos.clear();
+            dir.clear();
+        });
+        return animalButton;
+    }
 }

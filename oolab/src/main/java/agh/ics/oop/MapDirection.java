@@ -1,6 +1,6 @@
 package agh.ics.oop;
 
-public enum MapDirection {
+public enum MapDirection{
     NORTH,
     SOUTH,
     WEST,
@@ -49,6 +49,16 @@ public enum MapDirection {
             case SOUTH -> {res = res.add(new Vector2d(0, -1));}
         }
         return res;
+    }
+
+    public static MapDirection fromString(String s){
+        return switch (s){
+            case "N" -> MapDirection.NORTH;
+            case "S" -> MapDirection.SOUTH;
+            case "E" -> MapDirection.EAST;
+            case "W" -> MapDirection.WEST;
+            default -> throw new IllegalArgumentException();
+        };
     }
 
 

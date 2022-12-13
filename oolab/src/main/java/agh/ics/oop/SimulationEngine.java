@@ -43,6 +43,21 @@ public class SimulationEngine implements IEngine, Runnable {
         }
     }
 
+
+    public SimulationEngine(MoveDirection[] moves, IWorldMap map, ArrayList<Vector2d> animalsStart,
+                            ArrayList<MapDirection> initial, App app) {
+        this.moves = moves;
+        this.map = map;
+        this.guiObserver = app;
+        this.animals = new ArrayList<Animal>();
+        for (int i = 0; i < animalsStart.size(); i++) {
+            Animal animal = new Animal(map, animalsStart.get(i), initial.get(i));
+            animals.add(animal);
+            map.place(animal);
+        }
+    }
+
+
     @Override
     public void run() {
         Platform.runLater(() -> {
