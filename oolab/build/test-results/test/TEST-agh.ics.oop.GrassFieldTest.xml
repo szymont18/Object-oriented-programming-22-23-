@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="agh.ics.oop.GrassFieldTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2022-12-06T18:26:08" hostname="DESKTOP-P62BTN0" time="0.028">
+  <properties/>
+  <testcase name="place()" classname="agh.ics.oop.GrassFieldTest" time="0.025"/>
+  <testcase name="replantGrass()" classname="agh.ics.oop.GrassFieldTest" time="0.002"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

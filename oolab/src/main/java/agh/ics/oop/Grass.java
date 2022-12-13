@@ -2,7 +2,7 @@ package agh.ics.oop;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Grass {
+public class Grass implements IMapElement {
     private Vector2d coordinates;
     private IWorldMap map;
 
@@ -45,5 +45,9 @@ public class Grass {
 
     public void addObserver(IPositionChangeObserver observer){
         this.observerMap = observer;
+    }
+
+    public String getImagePath() {
+        return "src/main/resources/grass.png";
     }
 }

@@ -5,49 +5,33 @@ import javafx.application.Application;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.RowConstraints;
+import javafx.scene.layout.*;
+import javafx.scene.control.Button;
 import javafx.stage.Stage;
-import javafx.scene.layout.GridPane;
 import javafx.scene.control.Label;
-import java.awt.*;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Set;
+import javafx.scene.control.TextField;
+
 
 public class App extends Application {
     public GridPane gridPane = new GridPane();
-    private final int width = 50;
-    private final int height = 50;
+    private final int width = 75;
+    private final int height = 75;
 
     public void start(Stage primaryStage){
-        primaryStage.setTitle("World");
-        Parameters args = getParameters();
-        List<String> argsRaw = args.getRaw();
-        String[] argsTab = new String[argsRaw.size()];
-        argsRaw.toArray(argsTab);
-
-
-            MoveDirection[] directions = OptionsParser.parse(argsTab);
-
-            HashMap<Vector2d, Object> worldMap = new HashMap<Vector2d, Object>();
-            IWorldMap map = new RectangularMap(worldMap);
-            IWorldMap grassMap = new GrassField(5, worldMap);
-            Vector2d[] positions = {new Vector2d(2, 2), new Vector2d(3, 3), new Vector2d(4, 4)};
-            SimulationEngine engine = new SimulationEngine(directions, map, positions, this);
-
-
-            Scene scene = new Scene(this.gridPane, 500,500);
-
-            gridPane.setGridLinesVisible(true);
-            this.gridPane.setAlignment(Pos.CENTER);
+        try {
+            TextField textField = new TextField();
+            Button startButton = getStartButton(textField);
+            VBox vBox = new VBox(20, this.gridPane, textField, startButton);
+            vBox.setAlignment(Pos.CENTER);
+            Scene scene = new Scene(vBox, 800, 800);
             primaryStage.setScene(scene);
             primaryStage.show();
+        } catch (IllegalArgumentException exception) {
+            System.out.println(exception.getMessage());
+        }
 
-
-
-            engine.run();
 
     }
 
@@ -90,34 +74,42 @@ public class App extends Application {
         Set<Vector2d> occupiedPositions = worldMap.getAllPositions();
 
         for (Vector2d position : occupiedPositions){
-            Object object = worldMap.objectAt(position);
+            IMapElement imp = (IMapElement) worldMap.objectAt(position);
+            GuiElementBox vBox = new GuiElementBox(imp);
+            Label label2 = new Label();
+            GridPane.setHalignment(label2, HPos.CENTER);
 
-            if (object instanceof Animal) {
-                Animal specificObject = (Animal) object;
-                Label label1 = new Label(specificObject.toString());
-                this.gridPane.add(label1, 1 + position.x - left, 1 + up - position.y, 1, 1);
-                GridPane.setHalignment(label1, HPos.CENTER);
-
-
-            }
-            if (object instanceof Grass){
-                Grass specificObject = (Grass) object;
-                Label label1 = new Label(specificObject.toString());
-                this.gridPane.add(label1, 1 + position.x - left, 1 + up - position.y, 1, 1);
-                GridPane.setHalignment(label1, HPos.CENTER);
-
-
-            }
+            this.gridPane.add(vBox.vBox, 1 + position.x - left, 1 + up - position.y, 1, 1);
         }
     }
-    public void getMap(AbstractWorldMap worldMap) {
+    public void getMap(IWorldMap worldMap) {
         this.gridPane.setGridLinesVisible(false);
         this.gridPane.getColumnConstraints().clear();
         this.gridPane.getRowConstraints().clear();
         this.gridPane.getChildren().clear();
         this.gridPane.setGridLinesVisible(true);
         this.gridPane.setAlignment(Pos.CENTER);
-        modifyGrid(worldMap);
+        modifyGrid((AbstractWorldMap) worldMap);
+    }
+
+    public Button getStartButton(TextField textField) {
+        Button startButton = new Button("Start");
+        startButton.setMaxSize(100, 200);
+        startButton.setOnAction((action) -> {
+            String text = textField.getText();
+
+            //Creating Map
+            MoveDirection[] directions = OptionsParser.parse(text.split(" "));
+            HashMap<Vector2d, Object> worldMap = new HashMap<Vector2d, Object>();
+            IWorldMap map = new RectangularMap(worldMap);
+            IWorldMap grassMap = new GrassField(5, worldMap);
+            Vector2d[] positions = {new Vector2d(2, 2), new Vector2d(3, 3), new Vector2d(4, 4)};
+            SimulationEngine engine = new SimulationEngine(directions, map, positions, this);
+
+            Thread engineThread = new Thread(engine); //:: run ???
+            engineThread.start();
+        });
+        return startButton;
     }
 
 

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class Animal {
+public class Animal implements IMapElement{
     private MapDirection aDirection = MapDirection.NORTH;
     private Vector2d coordinates;
     private IWorldMap map;
@@ -86,5 +86,14 @@ public class Animal {
 
     public void addObserver(IPositionChangeObserver observer){
         this.observerMap.add(observer);
+    }
+
+    public String getImagePath() {
+        return switch (this.aDirection) {
+            case NORTH -> "src/main/resources/up.png";
+            case EAST -> "src/main/resources/right.png";
+            case SOUTH -> "src/main/resources/down.png";
+            case WEST -> "src/main/resources/left.png";
+        };
     }
 }
